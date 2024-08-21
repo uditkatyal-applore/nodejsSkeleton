@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  tskeleton-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      no_cache: true
+    image: tsk:node20-slim
+    container_name: tskeleton-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - NODE_ENV=$NODE_ENV
+      - SERVICE_CONTEXT=$SERVICE_CONTEXT
+      - SERVER_ROOT=$SERVER_ROOT
+      - SERVER_HOST=$SERVER_HOST
+      - SERVER_PORT=$SERVER_PORT
+      - ORIGINS=$ORIGINS
+      - ENCRYPTION_KEY=$ENCRYPTION_KEY
+      - JWT_SECRET_KEY=$JWT_SECRET_KEY
+    ports:
+      - 3003:3003
+      - 9229:9229
+    volumes:
+      - .:/usr/node/tsk
+      - /usr/node/tsk/dist
+      - /usr/node/tsk/node_modules
+    networks:
+      - tsk-net
+    command: >
+      npm run start
+
+networks:
+  tsk-net:
+    driver: bridge
